@@ -49,9 +49,9 @@ module.exports = {
       noInfo: true,
       headers: { "Access-Control-Allow-Origin": "*" },
       proxy: {
-          '/svc/*': {
-              host: 'localhost',
-              target: 'http://localhost:8081/',
+          '/*/': {
+              host: '0.0.0.0',
+              target: 'http://localhost:8081',
               changeOrigin: true
           }
       }
