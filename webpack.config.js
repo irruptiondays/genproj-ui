@@ -44,13 +44,13 @@ module.exports = {
     }
   },
   devServer: {
-      port: 8080,
+      port: 8085,
       historyApiFallback: true,
       noInfo: true,
       headers: { "Access-Control-Allow-Origin": "*" },
       proxy: {
-          '/*/': {
-              host: '0.0.0.0',
+          '/person/*': {
+              host: 'localhost',
               target: 'http://localhost:8081',
               changeOrigin: true
           }
@@ -63,8 +63,7 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
+  module.exports.devtool = '#source-map';
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {

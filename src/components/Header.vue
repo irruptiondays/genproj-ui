@@ -15,7 +15,7 @@
     export default {
         methods: {
             getAllPersons() {
-                this.$router.push('/persons');
+                this.$router.push('/persons-index');
             }
         }
     }

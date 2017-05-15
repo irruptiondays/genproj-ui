@@ -15,7 +15,7 @@ const router = new VueRouter({
 
 import axios from 'axios';
 axios.create({
-    baseURL: 'http://localhost:8081',
+    baseURL: 'http://localhost:8080',
     headers: {
         'Accept': 'application/json, text/plain, */*',
         'Cache-Control': 'no-store, must-revalidate'
