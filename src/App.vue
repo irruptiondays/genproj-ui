@@ -1,13 +1,17 @@
 <template>
   <div id="app">
     <div>
-      <app-persons></app-persons>
+      <appHeader></appHeader>
+    </div>
+    <div>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
     import Persons from './components/Persons.vue';
+    import Header from './components/Header.vue';
 
     export default {
         name: 'app',
@@ -16,6 +20,7 @@
         },
         components: {
             appPersons: Persons,
+            appHeader: Header
         }
     }
 </script>
