@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 export default class RestResource {
 
     initialState() {
@@ -11,6 +9,7 @@ export default class RestResource {
             lastName: '',
             suffix: '',
             maidenName: '',
+            gender: 'UNKNOWN',
             birthdateKnown: true,
             birthdateYear: 1900,
             birthdateMonth: 0,

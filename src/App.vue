@@ -19,7 +19,6 @@
             return {}
         },
         components: {
-            appPersons: Persons,
             appHeader: Header
         }
     }

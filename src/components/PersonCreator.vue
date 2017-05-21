@@ -1,8 +1,6 @@
 <template>
-
-    <div id="add-a-person-div" class="container starter-template">
+    <div id="add-a-person-div" class="starter-template container">
         <h1>Add a Person</h1>
-
 
         <form class="form-horizontal" id="create-new-person-form">
             <div class="form-group form-group-lg">
@@ -26,6 +24,15 @@
                     <input id="create-new-person-suffix" type="text" name="suffix" v-model="suffix"/><br/><br/>
                     Maiden name:<br/>
                     <input id="create-new-person-maiden-name" type="text" name="maiden-name" v-model="maidenName"/><br/><br/>
+
+
+                    Gender:<br/><br/>
+                    <select id="create-new-person-gender" v-model="gender">
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="UNKNOWN">Unknown</option>
+                    </select>
+
                     Birthdate (YYYY MM DD) Known?:
                     <input id="create-new-person-birth-date-known" type="checkbox" checked="true"
                            value="birthdate-known" v-model="birthdateKnown"/>
@@ -117,6 +124,7 @@
                 lastName: '',
                 suffix: '',
                 maidenName: '',
+                gender: 'UNKNOWN',
                 birthdateKnown: true,
                 birthdateYear: 1900,
                 birthdateMonth: 0,

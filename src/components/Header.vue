@@ -9,6 +9,8 @@
                           @click="createPerson">Add Person</span>
                     <span class="navbar-brand" id="get-all-persons-div-link"
                           @click="getAllPersons">Get All Persons</span>
+                    <span class="navbar-brand" id="set-family-origin-div-link"
+                          @click="setFamilyOrigin">Set Family Origin</span>
                 </div>
             </div>
         </nav>
@@ -26,6 +28,9 @@
             },
             createPerson() {
                 this.$router.push('/add-person');
+            },
+            setFamilyOrigin() {
+                this.$router.push('/set-family-origin');
             }
         }
     }
