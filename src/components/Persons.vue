@@ -9,7 +9,7 @@
             <form class="form-horizontal" id="get-person-form">
                 <label class="col-sm-2 control-label">Display all persons</label>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10"> <!--type="submit" id="bth-search"-->
+                    <div class="col-sm-offset-2 col-sm-10">
                         <button class="" @click="getPersons">Refresh</button>
                     </div>
                 </div>

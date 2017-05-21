@@ -149,7 +149,7 @@
                     console.log('person: ', result);
                     this.resetWindow();
                 }, error => {
-                    console.log('error', result);
+                    console.log('Error: ', error);
                 });
             },
             resetWindow: function () {
