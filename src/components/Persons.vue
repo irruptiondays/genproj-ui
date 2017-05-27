@@ -26,7 +26,10 @@
             }
         },
         methods: {
-            getPersons: function () {
+            getPersons: function (evt) {
+                if (evt) {
+                    evt.preventDefault();
+                }
                 Vue.prototype.http.get('/api/person/all').then(persons => {
                         this.allPersons = persons.data;
                     },

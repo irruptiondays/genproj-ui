@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+// needed for time stuff [global usage]
+window.moment = require('moment');
+
+// to assist with any data manipulation [global usage]
+window._ = require('lodash');
+
 import 'bootstrap/dist/js/bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.css';
 

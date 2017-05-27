@@ -8,9 +8,26 @@
 
                     Update existing person?
                     <input id="update-existing-person-checkbox" type="checkbox" v-model="existingPerson"/><br/><br/>
-                    <div id="update-existing-person-chooser">
-
+                    <div id="update-existing-person-chooser" v-if="existingPerson">
+                        <form>
+                            <select id="family-origin-ego" v-model="selectedPersonToUpdate">
+                                <option value="0"></option>
+                                <option v-for="p in allPersons" v-bind:value="p.id">{{ p.lastName }}, {{p.firstName }}
+                                    {{ p.middleNames }}
+                                </option>
+                            </select>
+                        </form>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg" @click="selectedPerson">Fetch Person
+                            </button>
+                        </div>
+                        <!--{{ selectedPersonToUpdate }}-->
                     </div>
+
+                    <!--{{ selectedPerson() }}-->
+
+                    <br/><br/>
 
                     First name:<br/>
                     <input id="create-new-person-first-name" type="text" name="first-name"
@@ -85,7 +102,8 @@
                            v-model="deathdateDay" v-if="deathdateKnown"/><br/><br/>
 
                     Residence:<br/>
-                    <input id="create-new-person-death-place" type="text" name="death-place" v-model="currentOrLateHome"/><br/><br/>
+                    <input id="create-new-person-death-place" type="text" name="death-place"
+                           v-model="currentOrLateHome"/><br/><br/>
 
                     Family Branch:<br/><br/>
                     <select id="create-new-person-family-branch" v-model="familyBranch">
@@ -119,6 +137,7 @@
         data() {
             return {
                 existingPerson: false,
+                id: 0,
                 firstName: '',
                 middleNames: '',
                 lastName: '',
@@ -135,22 +154,75 @@
                 deathdateMonth: 0,
                 deathdateDay: 1,
                 currentOrLateHome: '',
-                familyBranch: 'COMMON'
+                familyBranch: 'COMMON',
+                allPersons: this.getAllPersons(),
+                selectedPersonToUpdate: null,
             }
         },
         components: {
             'personService': RestResource
         },
         methods: {
+            selectedPerson: function (evt) {
+
+                if (evt) {
+                    evt.preventDefault();
+                }
+
+                if (!this.selectedPersonToUpdate) {
+                    return null;
+                }
+                if (!this.existingPerson) {
+                    return null;
+                } else {
+                    var self = this;
+                    let personToPopulate = _.find(this.allPersons, function (person) {
+                        return person.id === self.selectedPersonToUpdate;
+                    });
+
+                    if (!personToPopulate) {
+                        Object.assign(this.$data, restResourceService.initialState());
+                        return;
+                    }
+
+                    this.id = personToPopulate.id;
+                    this.firstName = personToPopulate.firstName;
+                    this.middleNames = personToPopulate.middleNames;
+                    this.lastName = personToPopulate.lastName;
+                    this.suffix = personToPopulate.suffix;
+                    this.maidenName = personToPopulate.maidenName;
+                    this.gender = personToPopulate.gender;
+//                        this.birthdateYear = 1900,
+//                        this.birthdateMonth = 0,
+//                        this.birthdateDay = 1,
+                    this.birthplace = personToPopulate.birthplace;
+//                        this.deathdateYear =
+//                        this.deathdateMonth = 0,
+//                        this.deathdateDay = 1,
+                    this.currentOrLateHome = personToPopulate.currentOrLateHome;
+                    this.familyBranch = personToPopulate.familyBranch;
+                    return personToPopulate;
+                }
+            },
             savePerson: function (evt) {
                 evt.preventDefault();
                 console.log(this.$data);
                 Vue.prototype.http.post('/api/person', this.$data).then(result => {
                     console.log('person: ', result);
+                    this.getAllPersons();
+                    selectedPersonToUpdate: null;
                     this.resetWindow();
                 }, error => {
                     console.log('Error: ', error);
                 });
+            },
+            getAllPersons: function () {
+                Vue.prototype.http.get('/api/person/all').then(persons => {
+                        this.allPersons = persons.data;
+                    },
+                    error => {
+                        console.log('getPersons Error ', error);
+                    });
             },
             resetWindow: function () {
                 Object.assign(this.$data, restResourceService.initialState());

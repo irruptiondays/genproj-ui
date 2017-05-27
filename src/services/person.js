@@ -1,9 +1,9 @@
 export default class RestResource {
 
     initialState() {
-        console.log('init state');
         return {
             existingPerson: false,
+            id: 0,
             firstName: '',
             middleNames: '',
             lastName: '',
