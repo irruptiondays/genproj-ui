@@ -39,7 +39,6 @@
 
 
         <form class="form-horizontal" id="submit-parents">
-            <label class="col-sm-2 control-label">Display all persons</label>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button class="btn btn-primary btn-lg" @click="saveParents">Add Parents</button>
