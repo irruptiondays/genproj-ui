@@ -9,7 +9,7 @@
             <form class="form-horizontal" id="get-person-form">
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-primary btn-lg" @click="getPersons">Refresh</button>
+                        <button class="btn btn-primary" @click="getPersons">Refresh</button>
                     </div>
                 </div>
             </form>

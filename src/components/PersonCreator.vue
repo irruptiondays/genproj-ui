@@ -19,7 +19,7 @@
                         </form>
                         <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit"
-                                    class="btn btn-primary btn-lg" @click="selectedPerson">Fetch Person
+                                    class="btn btn-primary" @click="selectedPerson">Fetch Person
                             </button>
                         </div>
                         <!--{{ selectedPersonToUpdate }}-->
@@ -118,7 +118,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit"
-                            class="btn btn-primary btn-lg" @click="savePerson">Submit
+                            class="btn btn-primary" @click="savePerson">Submit
                     </button>
                 </div>
             </div>
