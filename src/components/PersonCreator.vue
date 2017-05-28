@@ -148,7 +148,9 @@
                 birthdateYear: 1900,
                 birthdateMonth: 0,
                 birthdateDay: 1,
+                birthdate: 0,
                 birthplace: '',
+                deathdate: 0,
                 deathdateKnown: false,
                 deathdateYear: 1900,
                 deathdateMonth: 0,
@@ -192,13 +194,25 @@
                     this.suffix = personToPopulate.suffix;
                     this.maidenName = personToPopulate.maidenName;
                     this.gender = personToPopulate.gender;
-//                        this.birthdateYear = 1900,
-//                        this.birthdateMonth = 0,
-//                        this.birthdateDay = 1,
+
+                    let birthdateArray = restResourceService.epochToDate(personToPopulate.birthdate);
+
+                    this.birthdateYear = birthdateArray[0];
+                    this.birthdateMonth = birthdateArray[1];
+                    this.birthdateDay = birthdateArray[2];
                     this.birthplace = personToPopulate.birthplace;
-//                        this.deathdateYear =
-//                        this.deathdateMonth = 0,
-//                        this.deathdateDay = 1,
+
+                    let deathdateArray = restResourceService.epochToDate(personToPopulate.deathdate);
+
+                    console.log('deathdateArray ', deathdateArray);
+
+                    if (deathdateArray) {
+                        this.deathdateKnown = true;
+                        this.deathdateYear = deathdateArray[0];
+                        this.deathdateMonth = deathdateArray[1];
+                        this.deathdateDay = deathdateArray[2];
+                    }
+
                     this.currentOrLateHome = personToPopulate.currentOrLateHome;
                     this.familyBranch = personToPopulate.familyBranch;
                     return personToPopulate;
@@ -207,10 +221,13 @@
             savePerson: function (evt) {
                 evt.preventDefault();
                 console.log(this.$data);
+                this.birthdate = restResourceService.dateToEpoch(this.birthdateYear, this.birthdateMonth, this.birthdateDay);
+                this.deathdate = restResourceService.dateToEpoch(this.deathdateYear, this.deathdateMonth, this.deathdateDay);
+                console.log("deathdate: ", this.deathdate);
                 Vue.prototype.http.post('/api/person', this.$data).then(result => {
                     console.log('person: ', result);
                     this.getAllPersons();
-                    selectedPersonToUpdate: null;
+                    this.selectedPersonToUpdate = null;
                     this.resetWindow();
                 }, error => {
                     console.log('Error: ', error);

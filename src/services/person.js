@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default class RestResource {
 
     initialState() {
@@ -22,5 +24,18 @@ export default class RestResource {
             currentOrLateHome: '',
             familyBranch: 'COMMON'
         }
+    }
+
+    /*
+        TODO: Dates do not handle anything with time, timezones, etc. yet.
+     */
+
+    dateToEpoch(year, month, day) {
+        return moment().year(year).month(month).date(day);
+    }
+
+    epochToDate(epoch) {
+        var dateFromEpoch = moment(epoch);
+        return [dateFromEpoch.year(), dateFromEpoch.month(), dateFromEpoch.date()];
     }
 }
