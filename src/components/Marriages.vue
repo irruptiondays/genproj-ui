@@ -26,12 +26,16 @@
                 <tr>
                     <th>Spouse Name</th>
                     <th>Marriage Date</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="s in egoMarriages" :value="s.id">
                     <td>{{ s.spouse.lastName }}, {{ s.spouse.firstName }}</td>
                     <td>{{ s.date }}</td>
+                    <td>Edit</td>
+                    <td>Delete</td>
                 </tr>
                 </tbody>
             </table>
@@ -40,23 +44,43 @@
 
         <br/>
 
-        <h2>Add Marriage To:</h2>
-        <form>
-            <select id="family-origin-spouse" v-model="spouseSelected">
-                <option value="0"></option>
-                <option v-for="p in allPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
-                    }}
-                </option>
-            </select>
-        </form>
-        <br/>
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit"
-                    class="btn btn-primary" @click="createMarriage">Fetch Person
-            </button>
+        <h2>Add Marriage <input type="checkbox" v-model="addMarriage"></h2>
+        <div v-if="addMarriage">
+            <form>
+                <select id="family-origin-spouse" v-model="spouseSelected">
+                    <option value="0"></option>
+                    <option v-for="p in allPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
+                        }}
+                    </option>
+                </select>
+            </form>
+            <input type="checkbox" v-model="dateKnown">
+            <div v-if="dateKnown">
+                <input id="create-new-marriage-year" type="text" v-model="selectedYear"/>
+                <select id="create-new-marriage-month" v-model="selectedMonth">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <input id="create-new-marriage-day" type="text" v-model="selectedDay"/><br/><br/>
+            </div>
+            <br/>
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit"
+                        class="btn btn-primary" @click="createMarriage">Create Marriage
+                </button>
+            </div>
+            <br/>
         </div>
-        <br/>
-
 
     </div>
 
@@ -75,6 +99,11 @@
                 egoSelected: 0,
                 egoMarriages: [],
                 spouseSelected: 0,
+                addMarriage: false,
+                selectedYear: 1900,
+                selectedMonth: 0,
+                selectedDay: 1,
+                dateKnown: false,
                 allPersons: this.getAllPersons(),
                 marriage: {}
             }
@@ -130,13 +159,19 @@
                 var spouseB = this.getPersonById(this.spouseSelected);
                 this.marriage.spouse1 = spouseA;
                 this.marriage.spouse2 = spouseB;
-                this.marriage.date = 111111;
+                if (this.dateKnown) {
+                    this.marriage.date = restResourceService.dateToEpoch(this.selectedYear, this.selectedMonth, this.selectedDay);
+                }
                 console.log('marriage is', this.marriage);
                 var self = this;
                 Vue.prototype.http.post('/api/person/marriage', self.marriage).then(newMarriage => {
                         console.log('marriage returned', newMarriage);
                         this.egoSelected = 0;
                         this.spouseSelected = 0;
+                        this.dateKnown = false;
+                        this.selectedYear = 1900;
+                        this.selectedMonth = 0;
+                        this.selectedDay = 1;
                     },
                     error => {
                         console.log('getPersons Error ', error);
