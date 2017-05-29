@@ -34,12 +34,11 @@
                 <tr v-for="s in egoMarriages" :value="s.id">
                     <td>{{ s.spouse.lastName }}, {{ s.spouse.firstName }}</td>
                     <td>{{ s.date }}</td>
-                    <td>Edit</td>
+                    <td><span @click="updateMarriage(s)" class="click-edit-marriage">Edit</span></td>
                     <td>Delete</td>
                 </tr>
                 </tbody>
             </table>
-            <!--<span v-for="s in egoMarriages">{{ s.spouse.lastName }}, {{ s.spouse.firstName }}  | {{ s.date }}</span>-->
         </div>
 
         <br/>
@@ -105,14 +104,13 @@
                 selectedDay: 1,
                 dateKnown: false,
                 allPersons: this.getAllPersons(),
-                marriage: {}
+                marriage: {},
+                marriageId: 0
             }
         },
         methods: {
             getMarriages: function () {
                 Vue.prototype.http.get('/api/person/marriage/' + this.egoSelected).then(marriages => {
-                        console.log('this.egoSelected', this.egoSelected);
-                        console.log(marriages.data ? marriages.data.length : 0);
                         this.egoMarriages = marriages.data;
                     },
                     error => {
@@ -120,9 +118,6 @@
                     });
             },
             selectedPerson: function (evt) {
-
-                console.log('here');
-
                 if (evt) {
                     evt.preventDefault();
                 }
@@ -136,8 +131,6 @@
                 let personToPopulate = _.find(this.allPersons, function (person) {
                     return person.id === self.egoSelected;
                 });
-
-                console.log('personToPopulate ', personToPopulate);
 
                 if (!personToPopulate) {
                     Object.assign(this.$data, restResourceService.initialState());
@@ -159,19 +152,21 @@
                 var spouseB = this.getPersonById(this.spouseSelected);
                 this.marriage.spouse1 = spouseA;
                 this.marriage.spouse2 = spouseB;
+                this.marriage.id = this.marriageId;
                 if (this.dateKnown) {
                     this.marriage.date = restResourceService.dateToEpoch(this.selectedYear, this.selectedMonth, this.selectedDay);
                 }
-                console.log('marriage is', this.marriage);
+
                 var self = this;
                 Vue.prototype.http.post('/api/person/marriage', self.marriage).then(newMarriage => {
-                        console.log('marriage returned', newMarriage);
                         this.egoSelected = 0;
                         this.spouseSelected = 0;
                         this.dateKnown = false;
                         this.selectedYear = 1900;
                         this.selectedMonth = 0;
                         this.selectedDay = 1;
+                        this.marriage.id = 0;
+                        this.egoMarriages = [];
                     },
                     error => {
                         console.log('getPersons Error ', error);
@@ -181,6 +176,18 @@
                 return _.find(this.allPersons, function (person) {
                     return person.id === personId;
                 });
+            },
+            updateMarriage: function (spouseObject) {
+                this.addMarriage = true;
+                this.spouseSelected = spouseObject.spouse.id;
+                if (spouseObject.date) {
+                    var dateToSet = restResourceService.epochToDate(spouseObject.date);
+                    this.dateKnown = true;
+                    this.selectedYear = dateToSet[0];
+                    this.selectedMonth = dateToSet[1];
+                    this.selectedDay = dateToSet[2];
+                }
+                this.marriageId = spouseObject.id;
             }
         }
     }
@@ -189,5 +196,10 @@
 
 
 <style>
+
+    .click-edit-marriage {
+        color: blue;
+        cursor: pointer;
+    }
 
 </style>
