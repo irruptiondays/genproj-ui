@@ -5,7 +5,7 @@
         <h2>Select Person</h2>
         <form>
             <select id="family-origin-ego" v-model="egoSelected">
-                <option v-for="p in allPersons" v-bind:value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
+                <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
                     }}
                 </option>
             </select>
@@ -26,7 +26,7 @@
         <form v-if="fatherAdded">
             <select id="family-origin-father" v-model="fatherSelected">
                 <option value="0"></option>
-                <option v-for="p in males" v-bind:value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames }}
+                <option v-for="p in males" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames }}
                 </option>
             </select>
         </form>
@@ -41,7 +41,7 @@
         <form v-if="motherAdded">
             <select id="family-origin-mother" v-model="motherSelected">
                 <option value="0"></option>
-                <option v-for="p in females" v-bind:value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
+                <option v-for="p in females" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
                     }}
                 </option>
             </select>
@@ -63,10 +63,11 @@
 <script>
     import Vue from 'vue';
     import Person from './Persons.vue'
+    import { mapActions } from 'vuex';
+
     export default {
         data() {
             return {
-                allPersons: this.getPersons(),
                 males: [],
                 females: [],
                 egoSelected: 0,
@@ -77,17 +78,9 @@
             }
         },
         methods: {
-            getPersons: function () {
-                Vue.prototype.http.get('/api/person/all').then(persons => {
-                        this.allPersons = persons.data;
-                        this.males = this.setMales(this.allPersons);
-                        this.females = this.setFemales(this.allPersons);
-                        console.log('this.allPersons ', this.allPersons);
-                    },
-                    error => {
-                        console.log('getPersons Error ', error);
-                    });
-            },
+            ...mapActions({
+                fetchAllPersons: 'fetchAllPersons'
+            }),
             saveParents: function (evt) {
                 evt.preventDefault();
                 if (this.egoSelected === 0) return;
@@ -95,28 +88,32 @@
                 var motherId = this.motherAdded ? this.motherSelected : 0;
                 Vue.prototype.http.post('/api/person/origin/' + this.egoSelected + '/' + fatherId + '/' + motherId).then(result => {
                     console.log('person: ', result);
-                    this.getPersons();
+                    //this.displayPersons();
                     this.egoSelected = 0;
                     this.fatherSelected = 0;
                     this.motherSelected = 0;
                     this.fatherAdded = true;
                     this.motherAdded = true;
-
+                    this.fetchAllPersons();
                 }, error => {
                     console.log('Error: ', error);
                 });
             },
-            setMales: function (persons) {
-                return persons.filter(person => {
+            setMales: function () {
+                this.males = this.$store.getters.allPersons.filter(person => {
                     if (person.gender == 'MALE') return person;
                 });
             },
-            setFemales: function (persons) {
-                return persons.filter(person => {
+            setFemales: function () {
+                this.females = this.$store.getters.allPersons.filter(person => {
                     if (person.gender == 'FEMALE') return person;
                 });
             },
             selectedPerson: function (evt) {
+
+                this.setFemales();
+                this.setMales();
+
                 this.fatherSelected = 0;
                 this.motherSelected = 0;
 
@@ -130,7 +127,7 @@
                 }
 
                 var self = this;
-                let personToPopulate = _.find(this.allPersons, function (person) {
+                let personToPopulate = _.find(this.$store.getters.allPersons, function (person) {
                     return person.id === self.egoSelected;
                 });
 
@@ -142,18 +139,26 @@
                 }
 
                 if (personToPopulate.father) {
-                    this.fatherAdded = true
+                    this.fatherAdded = true;
                     this.fatherSelected = personToPopulate.father.id;
                 }
 
                 if (personToPopulate.mother) {
-                    this.motherAdded = true
+                    this.motherAdded = true;
                     this.motherSelected = personToPopulate.mother.id;
                 }
 
 
             }
 
+        },
+        computed: {
+            displayPersons() {
+                return this.$store.getters.allPersons;
+            }
+        },
+        created() {
+            this.fetchAllPersons();
         }
 
     }

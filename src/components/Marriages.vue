@@ -8,7 +8,7 @@
             <form>
                 <select id="family-origin-ego" v-model="egoSelected">
                     <option value="0"></option>
-                    <option v-for="p in allPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{
+                    <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{
                         p.middleNames }}
                     </option>
                 </select>
@@ -54,7 +54,7 @@
             <form>
                 <select id="family-origin-spouse" v-model="spouseSelected">
                     <option value="0"></option>
-                    <option v-for="p in allPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
+                    <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
                         }}
                     </option>
                 </select>
@@ -95,6 +95,7 @@
 <script>
 
     import Vue from 'vue';
+    import { mapActions } from 'vuex';
     import RestResource from '../services/person';
     const restResourceService = new RestResource();
 
@@ -109,7 +110,6 @@
                 selectedMonth: 0,
                 selectedDay: 1,
                 dateKnown: false,
-                allPersons: this.getAllPersons(),
                 marriage: {},
                 marriageId: 0,
                 deleteMarriageConfirm: false,
@@ -117,6 +117,9 @@
             }
         },
         methods: {
+            ...mapActions({
+                fetchAllPersons: 'fetchAllPersons'
+            }),
             getMarriages: function () {
                 Vue.prototype.http.get('/api/person/marriage/' + this.egoSelected).then(marriages => {
                         this.egoMarriages = marriages.data;
@@ -136,7 +139,7 @@
 
 
                 var self = this;
-                let personToPopulate = _.find(this.allPersons, function (person) {
+                let personToPopulate = _.find(this.$store.getters.allPersons, function (person) {
                     return person.id === self.egoSelected;
                 });
 
@@ -146,14 +149,6 @@
                 }
 
                 this.egoMarriages = this.getMarriages();
-            },
-            getAllPersons: function () {
-                Vue.prototype.http.get('/api/person/all').then(persons => {
-                        this.allPersons = persons.data;
-                    },
-                    error => {
-                        console.log('getPersons Error ', error);
-                    });
             },
             createMarriage: function () {
                 var spouseA = this.getPersonById(this.egoSelected);
@@ -174,7 +169,7 @@
                     });
             },
             getPersonById: function (personId) {
-                return _.find(this.allPersons, function (person) {
+                return _.find(this.$store.getters.allPersons, function (person) {
                     return person.id === personId;
                 });
             },
@@ -218,6 +213,14 @@
                 this.marriage.id = 0;
                 this.egoMarriages = [];
             }
+        },
+        computed: {
+            displayPersons() {
+                return this.$store.getters.allPersons;
+            }
+        },
+        created() {
+            this.fetchAllPersons();
         }
     }
 
