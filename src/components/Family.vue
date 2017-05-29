@@ -96,6 +96,12 @@
                 Vue.prototype.http.post('/api/person/origin/' + this.egoSelected + '/' + fatherId + '/' + motherId).then(result => {
                     console.log('person: ', result);
                     this.getPersons();
+                    this.egoSelected = 0;
+                    this.fatherSelected = 0;
+                    this.motherSelected = 0;
+                    this.fatherAdded = true;
+                    this.motherAdded = true;
+
                 }, error => {
                     console.log('Error: ', error);
                 });
@@ -111,8 +117,8 @@
                 });
             },
             selectedPerson: function (evt) {
-                this.fatherSelected= 0;
-                this.motherSelected= 0;
+                this.fatherSelected = 0;
+                this.motherSelected = 0;
 
                 if (evt) {
                     evt.preventDefault();

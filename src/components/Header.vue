@@ -11,6 +11,8 @@
                           @click="getAllPersons">Get All Persons</span>
                     <span class="navbar-brand" id="set-family-origin-div-link"
                           @click="setFamilyOrigin">Set Family Origin</span>
+                    <span class="navbar-brand" id="set-marriages-div-link"
+                          @click="setMarriages">Set Marriages</span>
                 </div>
             </div>
         </nav>
@@ -31,6 +33,9 @@
             },
             setFamilyOrigin() {
                 this.$router.push('/set-family-origin');
+            },
+            setMarriages() {
+                this.$router.push('/set-marriages');
             }
         }
     }
