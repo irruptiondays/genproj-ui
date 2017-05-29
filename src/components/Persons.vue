@@ -3,13 +3,13 @@
             <h1>List all persons</h1>
 
             <div>
-                <span v-for="p in allPersons">{{ p.lastName }}, {{ p.firstName }} {{ p.middleNames }}<br /></span>
+                <span v-for="p in displayPersons">{{ p.lastName }}, {{ p.firstName }} {{ p.middleNames }}<br /></span>
             </div>
 
             <form class="form-horizontal" id="get-person-form">
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-primary" @click="getPersons">Refresh</button>
+                        <button class="btn btn-primary" @click="fetchAllPersons" onclick="return false;">Refresh</button>
                     </div>
                 </div>
             </form>
@@ -19,25 +19,25 @@
 
 <script>
     import Vue from 'vue';
+    import { mapActions } from 'vuex';
     export default {
         data() {
             return {
-                allPersons: this.getPersons()
+                allPersons: this.$store.getters.allPersons
             }
         },
         methods: {
-            getPersons: function (evt) {
-                if (evt) {
-                    evt.preventDefault();
-                }
-                Vue.prototype.http.get('/api/person/all').then(persons => {
-                        this.allPersons = persons.data;
-                    },
-                    error => {
-                        console.log('getPersons Error ', error);
-                    });
+            ...mapActions({
+                fetchAllPersons: 'fetchAllPersons'
+            })
+        },
+        computed: {
+            displayPersons() {
+                return this.$store.getters.allPersons;
             }
-
+        },
+        created() {
+            this.fetchAllPersons();
         }
     }
 </script>

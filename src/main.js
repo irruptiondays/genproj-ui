@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-// needed for time stuff [global usage]
 window.moment = require('moment');
 
-// to assist with any data manipulation [global usage]
 window._ = require('lodash');
 
 import 'bootstrap/dist/js/bootstrap.js';
@@ -19,8 +17,7 @@ const router = new VueRouter({
     routes
 });
 
-// import VueResource from 'vue-resource';
-// Vue.use(VueResource);
+import store from './store/store.js';
 
 import axios from 'axios';
 axios.create({
@@ -35,5 +32,6 @@ Vue.prototype.http = axios;
 new Vue({
     el: '#app',
     router,
+    store,
     render: h => h(App)
 });
