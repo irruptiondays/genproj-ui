@@ -35,11 +35,18 @@
                     <td>{{ s.spouse.lastName }}, {{ s.spouse.firstName }}</td>
                     <td>{{ s.date }}</td>
                     <td><span @click="updateMarriage(s)" class="click-edit-marriage">Edit</span></td>
-                    <td>Delete</td>
+                    <td><span @click="openDeleteMarriageWarning(s.id)" class="click-edit-marriage">Delete</span></td>
                 </tr>
                 </tbody>
             </table>
         </div>
+
+        {{ deleteMarriageConfirm }}
+        <div id="delete-marriage-confirm" v-if="deleteMarriageConfirm" class="alert alert-warning"><span><strong>Are you sure you want to delete this marriage?</strong></span>
+            <span @click="deleteMarriage" class="click-edit-marriage">Yes</span>
+            <span @click="resetDeleteMarriage" class="click-edit-marriage">No</span>
+        </div>
+
 
         <br/>
 
@@ -105,7 +112,9 @@
                 dateKnown: false,
                 allPersons: this.getAllPersons(),
                 marriage: {},
-                marriageId: 0
+                marriageId: 0,
+                deleteMarriageConfirm: false,
+                marriageToDelete: 0
             }
         },
         methods: {
@@ -159,14 +168,7 @@
 
                 var self = this;
                 Vue.prototype.http.post('/api/person/marriage', self.marriage).then(newMarriage => {
-                        this.egoSelected = 0;
-                        this.spouseSelected = 0;
-                        this.dateKnown = false;
-                        this.selectedYear = 1900;
-                        this.selectedMonth = 0;
-                        this.selectedDay = 1;
-                        this.marriage.id = 0;
-                        this.egoMarriages = [];
+                        this.resetScreen();
                     },
                     error => {
                         console.log('getPersons Error ', error);
@@ -188,6 +190,34 @@
                     this.selectedDay = dateToSet[2];
                 }
                 this.marriageId = spouseObject.id;
+            },
+            openDeleteMarriageWarning: function (marriageId) {
+                this.deleteMarriageConfirm = true
+                this.marriageToDelete = marriageId;
+            },
+            deleteMarriage: function () {
+                Vue.prototype.http.delete('/api/person/marriage/' + this.marriageToDelete).then(d => {
+                        console.log('Marriage deleted');
+                        this.resetDeleteMarriage();
+                        this.resetScreen();
+                    },
+                    error => {
+                        console.log('getPersons Error ', error);
+                    });
+            },
+            resetDeleteMarriage: function () {
+                this.deleteMarriageConfirm = false;
+                this.marriageToDelete = 0;
+            },
+            resetScreen: function () {
+                this.egoSelected = 0;
+                this.spouseSelected = 0;
+                this.dateKnown = false;
+                this.selectedYear = 1900;
+                this.selectedMonth = 0;
+                this.selectedDay = 1;
+                this.marriage.id = 0;
+                this.egoMarriages = [];
             }
         }
     }
@@ -200,6 +230,10 @@
     .click-edit-marriage {
         color: blue;
         cursor: pointer;
+    }
+
+    #delete-marriage-confirm {
+        display: block;
     }
 
 </style>
