@@ -23,7 +23,6 @@
     export default {
         data() {
             return {
-                allPersons: this.$store.getters.allPersons
             }
         },
         methods: {

@@ -41,7 +41,6 @@
             </table>
         </div>
 
-        {{ deleteMarriageConfirm }}
         <div id="delete-marriage-confirm" v-if="deleteMarriageConfirm" class="alert alert-warning"><span><strong>Are you sure you want to delete this marriage?</strong></span>
             <span @click="deleteMarriage" class="click-edit-marriage">Yes</span>
             <span @click="resetDeleteMarriage" class="click-edit-marriage">No</span>
