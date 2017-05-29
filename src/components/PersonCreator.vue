@@ -26,6 +26,10 @@
                             <button type="submit"
                                     class="btn btn-primary" @click="resetWindow">Clear Fields
                             </button>
+
+                            <button type="submit"
+                                    class="btn btn-primary" @click="deletePerson">Delete This Person
+                            </button>
                         </div>
                     </div>
 
@@ -268,6 +272,19 @@
             },
             resetWindow: function () {
                 Object.assign(this.$data, restResourceService.initialState());
+            },
+            deletePerson: function (evt) {
+                if (evt) {
+                    evt.preventDefault();
+                }
+                Vue.prototype.http.delete('/api/person/' + this.selectedPersonToUpdate).then(d => {
+                        console.log('Person deleted');
+                        this.getAllPersons();
+                        this.resetWindow();
+                    },
+                    error => {
+                        console.log('getPersons Error ', error);
+                    });
             }
         }
     }
