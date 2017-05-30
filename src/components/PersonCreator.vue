@@ -13,9 +13,7 @@
                         <form>
                             <select id="family-origin-ego" v-model="selectedPersonToUpdate">
                                 <option value="0"></option>
-                                <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{ p.firstName
-                                    }}
-                                    {{ p.middleNames }}
+                                <option v-for="p in displayPersons" :value="p.id">{{ p.printedName }}
                                 </option>
                             </select>
                         </form>

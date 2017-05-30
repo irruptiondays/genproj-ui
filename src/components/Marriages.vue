@@ -8,8 +8,7 @@
             <form>
                 <select id="family-origin-ego" v-model="egoSelected">
                     <option value="0"></option>
-                    <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{
-                        p.middleNames }}
+                    <option v-for="p in displayPersons" :value="p.id">{{ p.printedName }}
                     </option>
                 </select>
             </form>
@@ -54,8 +53,7 @@
             <form>
                 <select id="family-origin-spouse" v-model="spouseSelected">
                     <option value="0"></option>
-                    <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
-                        }}
+                    <option v-for="p in displayPersons" :value="p.id">{{ p.printedName }}
                     </option>
                 </select>
             </form>

@@ -5,8 +5,7 @@
         <h2>Select Person</h2>
         <form>
             <select id="family-origin-ego" v-model="egoSelected">
-                <option v-for="p in displayPersons" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
-                    }}
+                <option v-for="p in displayPersons" :value="p.id">{{ p.printedName }}
                 </option>
             </select>
         </form>
@@ -15,7 +14,6 @@
                     class="btn btn-primary" @click="selectedPerson">Fetch Person
             </button>
         </div>
-        <span>Selected Ego: {{ egoSelected }}</span>
 
 
         <h2>Select Father
@@ -26,7 +24,7 @@
         <form v-if="fatherAdded">
             <select id="family-origin-father" v-model="fatherSelected">
                 <option value="0"></option>
-                <option v-for="p in males" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames }}
+                <option v-for="p in males" :value="p.id">{{ p.printedName }}
                 </option>
             </select>
         </form>
@@ -41,8 +39,7 @@
         <form v-if="motherAdded">
             <select id="family-origin-mother" v-model="motherSelected">
                 <option value="0"></option>
-                <option v-for="p in females" :value="p.id">{{ p.lastName }}, {{p.firstName }} {{ p.middleNames
-                    }}
+                <option v-for="p in females" :value="p.id">{{ p.printedName }}
                 </option>
             </select>
         </form>
