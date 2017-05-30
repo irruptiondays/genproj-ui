@@ -17,9 +17,9 @@
                 <tbody>
                 <tr v-for="p in displayPersons">
                     <td>{{ p.printedName }}</td>
-                    <td>{{ p.birthdate }}</td>
+                    <td>{{ p.birthdate | dateFormat }}</td>
                     <td>{{ p.birthplace }}</td>
-                    <td>{{ p.deathdate ? p.deathdate : '' }}</td>
+                    <td>{{ p.deathdate | dateFormat}}</td>
                     <td>{{ p.father ? p.father.printedName : '' }}</td>
                     <td>{{ p.mother ? p.mother.printedName : '' }}</td>
                     <td></td>
@@ -50,6 +50,15 @@
             ...mapActions({
                 fetchAllPersons: 'fetchAllPersons'
             })
+        },
+        filters: {
+            dateFormat(value) {
+                if (value) {
+                    return moment(value).format('YYYY/MM/DD');
+                } else {
+                    return '';
+                }
+            }
         },
         computed: {
             displayPersons() {
