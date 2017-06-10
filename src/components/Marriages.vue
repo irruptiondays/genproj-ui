@@ -25,6 +25,7 @@
                 <tr>
                     <th>Spouse Name</th>
                     <th>Marriage Date</th>
+                    <th>Most Recent</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -33,6 +34,7 @@
                 <tr v-for="s in egoMarriages" :value="s.id">
                     <td>{{ s.spouse.lastName }}, {{ s.spouse.firstName }}</td>
                     <td>{{ s.date }}</td>
+                    <td>{{ s.mostRecent ? s.mostRecent : false }}</td>
                     <td><span @click="updateMarriage(s)" class="click-edit-marriage">Edit</span></td>
                     <td><span @click="openDeleteMarriageWarning(s.id)" class="click-edit-marriage">Delete</span></td>
                 </tr>
@@ -57,6 +59,11 @@
                     </option>
                 </select>
             </form>
+
+            <div v-if="addMarriage">
+                <label>Current Marriage? </label><input type="checkbox" v-model="selectedCurrentMarriage"><br/><br/>
+            </div>
+
             <input type="checkbox" v-model="dateKnown">
             <div v-if="dateKnown">
                 <input id="create-new-marriage-year" type="text" v-model="selectedYear"/>
@@ -93,7 +100,7 @@
 <script>
 
     import Vue from 'vue';
-    import { mapActions } from 'vuex';
+    import {mapActions} from 'vuex';
     import RestResource from '../services/person';
     const restResourceService = new RestResource();
 
@@ -104,6 +111,7 @@
                 egoMarriages: [],
                 spouseSelected: 0,
                 addMarriage: false,
+                selectedCurrentMarriage: false,
                 selectedYear: 1900,
                 selectedMonth: 0,
                 selectedDay: 1,
@@ -157,10 +165,11 @@
                 if (this.dateKnown) {
                     this.marriage.date = restResourceService.dateToEpoch(this.selectedYear, this.selectedMonth, this.selectedDay);
                 }
+                this.marriage.mostRecent = this.selectedCurrentMarriage;
 
                 var self = this;
                 Vue.prototype.http.post('/api/person/marriage', self.marriage).then(newMarriage => {
-                        this.resetScreen();
+                        self.resetScreen();
                     },
                     error => {
                         console.log('getPersons Error ', error);
@@ -181,6 +190,7 @@
                     this.selectedMonth = dateToSet[1];
                     this.selectedDay = dateToSet[2];
                 }
+                this.selectedCurrentMarriage = spouseObject.mostRecent;
                 this.marriageId = spouseObject.id;
             },
             openDeleteMarriageWarning: function (marriageId) {
@@ -202,9 +212,11 @@
                 this.marriageToDelete = 0;
             },
             resetScreen: function () {
+                this.addMarriage = false;
                 this.egoSelected = 0;
                 this.spouseSelected = 0;
                 this.dateKnown = false;
+                this.selectedCurrentMarriage = false;
                 this.selectedYear = 1900;
                 this.selectedMonth = 0;
                 this.selectedDay = 1;
